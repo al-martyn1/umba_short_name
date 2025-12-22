@@ -4,7 +4,13 @@
 
 
 #if defined(_WIN32) || defined(WIN32)
+
     #include <windows.h>
+
+#else
+
+    #include <unistd.h>
+
 #endif
 
 
@@ -18,7 +24,41 @@ int main(int argc, char* argv[])
 
     if (argc>1)
     {
-        inputPath = argv[1];
+        if (argc==2 && std::string(argv[1])=="-c")
+        {
+            // Use current dir
+            #if defined(_WIN32) || defined(WIN32)
+
+            char buf[MAX_PATH+1] = {0};
+            DWORD dwRes = GetCurrentDirectoryA( sizeof(buf), &buf[0] );
+            if (dwRes)
+            {
+                inputPath.assign(&buf[0], std::size_t(dwRes));
+            }
+
+            #else
+
+            char buf[2048];
+
+            auto pRes = getcwd(&buf[0], sizeof(buf));
+            if (pRes)
+                inputPath = pRes;
+
+            #endif
+        }
+        else
+        {
+            for(int i=1; i<argc; ++i)
+            {
+                if (!inputPath.empty())
+                    inputPath.append(1, ' ');
+                inputPath.append(argv[i]);
+    
+                // Если у нас несколько частей, выводим их в cerr
+                if (argc>2)
+                   std::cerr << argv[i] << "\n";
+            }
+        }
     }
     else
     {
