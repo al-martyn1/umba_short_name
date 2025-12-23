@@ -28,8 +28,8 @@ int main(int argc, char* argv[])
                 inputPath.append(argv[i]);
     
                 // Если у нас несколько частей, выводим их в cerr
-                if (argc>2)
-                   std::cerr << argv[i] << "\n";
+                // if (argc>2)
+                //    std::cerr << argv[i] << "\n";
             }
         }
     }

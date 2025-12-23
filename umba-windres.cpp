@@ -27,24 +27,6 @@
 int main(int argc, char* argv[])
 {
 
-#if 0
-    if (argc>1)
-    {
-        if (!umba::shortnames::isPathDirOrFile(argv[1]))
-        {
-            std::cout << argv[1] << " is not a file nor directory\n";
-
-            #if defined(_WIN32) || defined(WIN32)
-            std::cout << "Error: " << GetLastError() << "\n";
-            #endif
-        }
-        else
-        {
-            std::cout << argv[1] << " is a file or directory\n";
-        }
-    }
-#endif
-
     std::vector<std::string> argsVec;
 
     for(int i=1; i<argc; ++i)
@@ -65,18 +47,26 @@ int main(int argc, char* argv[])
 
     if (windresExe!="windres" && windresExe!="windres.exe")
     {
-        // Первый элемент - не имя файла оригинального windres, значит, нам нужно добавить его в вектор, без пути
-        // иначе - не меняем
+        // Первый элемент - не имя файла оригинального windres, значит, нам нужно добавить 'windres' в вектор аргументов, без пути
+        // иначе - первый элемент оставляем, как есть
         windresExe = "windres";
         #if defined(_WIN32) || defined(WIN32)
-        windresExe += ".exe";
+        windresExe += ".exe"; // чтобы не запустился какой-нибудь левый батник, добавляем явно расширение
         #endif
 
         argsVec.insert(argsVec.begin(), windresExe);
     }
 
-    // std::cout << "WINDRES: " << windresExe << "\n";
-
+    // Для всех аргументов пытаемся извлечь родительский каталог
+    // Это делается для того, что аргументом может быть имя файла, который является выходным и может не существовать
+    // А путь будет создан системой сборки
+    // Если получилось извлечь родительский путь, то проверяем его существование
+    // Не работает для UNC имён
+    // Если путь существует, то пытаемся сконвертировать исходный аргумент в короткий 8.3 формат.
+    // Если встречается какая-то часть, которая не конвертируется, то весь остаток пути собирается без конвертирования
+    // Под системами не Win32 никакая модификация не производится
+    // В Win32 системах короткие пути могут быть откючены, тогда это не работает.
+    // Но по умолчанию короткие пути включены.
     for(std::vector<std::string>::iterator it=std::next(argsVec.begin()); it!=argsVec.end(); ++it)
     {
         std::string parentPath = umba::shortnames::getParentPath(*it);
