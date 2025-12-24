@@ -31,12 +31,12 @@ namespace shortnames {
 
 //----------------------------------------------------------------------------
 inline
-std::string getParentPath(const std::string &path)
+std::string getParentPath(const std::string &path, bool keepSep=false)
 {
     auto pos = path.find_last_of("\\/");
     if (pos==path.npos)
         return std::string();
-    return std::string(path, 0, pos);
+    return std::string(path, 0, pos + (keepSep?1u:0u));
 }
 
 //----------------------------------------------------------------------------
