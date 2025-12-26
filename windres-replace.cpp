@@ -36,7 +36,18 @@ bool testWindresExist(std::string path, const std::string &windres)
 inline
 std::string findOriginalRenamedWindres(const std::string &path) // путь должен заканчиваться разделителем
 {
-    std::vector<std::string> prefixes = {"gcc", "gnu", "mingw"};
+    std::vector<std::string> prefixes = { "mingw-gcc-original"
+                                        , "gcc-original"
+                                        , "gcc"
+                                        , "mingw-gnu-original"
+                                        , "gnu-original"
+                                        , "gnu"
+                                        , "mingw-original"
+                                        , "mingw-gcc"
+                                        , "mingw-gnu"
+                                        , "mingw"
+                                        };
+
     for(auto prefix: prefixes)
     {
         if (testWindresExist(path, prefix + "-windres"))
