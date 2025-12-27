@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
 
     #if defined(_WIN32) || defined(WIN32)
 
-    return _execvp(orgWindres.c_str(), execArgs.data());
+    return (int)_execvp(orgWindres.c_str(), execArgs.data());
 
     #else
 
-    return execvp(orgWindres.c_str(), execArgs.data());
+    return (int)execvp(orgWindres.c_str(), execArgs.data());
 
     #endif
 }

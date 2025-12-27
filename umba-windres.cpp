@@ -94,11 +94,11 @@ int main(int argc, char* argv[])
 
     #if defined(_WIN32) || defined(WIN32)
 
-    return _execvp(exeName.c_str(), execArgs.data());
+    return (int)_execvp(exeName.c_str(), execArgs.data());
 
     #else
 
-    return execvp(exeName.c_str(), execArgs.data());
+    return (int)execvp(exeName.c_str(), execArgs.data());
 
     #endif
 }
